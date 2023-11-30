@@ -82,6 +82,12 @@ class MyApp extends StatelessWidget {
     ];
 
     return MaterialApp(
+      title: 'FlutterBoot Day01',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(),
         body: Padding(
