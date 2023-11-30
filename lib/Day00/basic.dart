@@ -64,9 +64,10 @@ class _HelloFlutterState extends State<HelloFlutter> {
                 )),
             Text(
               score.toString(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 32,
+                color: Colors.black.withOpacity(0.9),
               ),
             ),
             const SizedBox(height: 10),
@@ -75,20 +76,12 @@ class _HelloFlutterState extends State<HelloFlutter> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 FilledButton(
-                  onPressed: () {
-                    setState(() {
-                      score++;
-                    });
-                  },
+                  onPressed: () => increaseScore(),
                   child: const Text('+'),
                 ),
                 const SizedBox(width: 10),
                 FilledButton(
-                  onPressed: () {
-                    setState(() {
-                      score--;
-                    });
-                  },
+                  onPressed: () => decreaseScore(),
                   child: const Text('-'),
                 ),
               ],
