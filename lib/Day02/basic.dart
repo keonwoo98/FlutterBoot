@@ -10,20 +10,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
+    return MaterialApp(
+      title: 'FlutterBoot Day02',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: const MyHighScore(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class MyHighScore extends StatefulWidget {
+  const MyHighScore({super.key});
 
   @override
-  State<StatefulWidget> createState() => _MyHomePageState();
+  State<MyHighScore> createState() => _MyHighScoreState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
+class _MyHighScoreState extends State<MyHighScore>
     with SingleTickerProviderStateMixin {
   int score = 0;
   late AnimationController _animationController;
@@ -39,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage>
         resetScore();
       }
     });
-    timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
       if (gaugeValue.value > 0) {
         setState(() {
           _animationController.reverse();
@@ -49,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage>
     });
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 1000),
     );
 
     _animation =
@@ -62,14 +68,22 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
-  void _startAnimation() {
+  @override
+  void dispose() {
+    _animationController.dispose();
+    timer?.cancel();
+    gaugeValue.dispose();
+    super.dispose();
+  }
+
+  void startAnimation() {
     gaugeValue.value += 0.2;
     _animationController.animateTo(gaugeValue.value);
   }
 
   void onButtonPressed() {
     if (gaugeValue.value < 1) {
-      _startAnimation();
+      startAnimation();
     }
     if (gaugeValue.value >= 1) {
       incrementScore();
@@ -91,54 +105,37 @@ class _MyHomePageState extends State<MyHomePage>
   Widget _gaugeBar() {
     double barHeight = MediaQuery.of(context).size.height * 0.4;
     double gaugeHeight = barHeight * gaugeValue.value;
-    return SizedBox(
-        child: Container(
-      width: 50,
+    const borderRadius = BorderRadius.only(
+        topLeft: Radius.circular(16), topRight: Radius.circular(16));
+    return Container(
+      width: 40,
       height: barHeight,
       decoration: const BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
+        borderRadius: borderRadius,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            width: 50,
+            width: 40,
             height: gaugeHeight * gaugeValue.value,
             decoration: const BoxDecoration(
               color: Colors.deepPurple,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
+              borderRadius: borderRadius,
             ),
           ),
         ],
       ),
-    ));
+    );
   }
 
   Widget _plusButton() {
-    return SafeArea(
-      child: ElevatedButton(
-        onPressed: () {
-          onButtonPressed();
-        },
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(16.0),
-          minimumSize: const Size.square(60),
-          backgroundColor: Colors.purple.shade50,
-        ),
-        child: const Text(
-          '+',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+    return FloatingActionButton(
+      onPressed: onButtonPressed,
+      child: const Text(
+        '+',
+        style: TextStyle(fontSize: 30),
       ),
     );
   }
@@ -147,46 +144,39 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Your Score',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                '$score',
-                style:
-                    const TextStyle(fontSize: 46, fontWeight: FontWeight.bold),
-              ),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Column(
+              children: [
+                const SizedBox(height: 32),
+                const Text(
+                  'Your Score',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.normal),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  score.toString(),
+                  style: const TextStyle(
+                      fontSize: 46, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Positioned(
+              right: 24,
+              bottom: 24,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
-                    children: [
-                      _gaugeBar(),
-                      const SizedBox(height: 16),
-                      _plusButton(),
-                      const SizedBox(height: 16),
-                    ],
-                  )
+                  _gaugeBar(),
+                  const SizedBox(height: 8),
+                  _plusButton(),
                 ],
               ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    timer?.cancel();
-    gaugeValue.dispose();
-    super.dispose();
   }
 }
