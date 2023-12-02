@@ -30,12 +30,10 @@ class MyTextField extends StatefulWidget {
 }
 
 class _MyTextFieldState extends State<MyTextField> {
-  TextEditingController leftInputController =
-      TextEditingController(text: 'Hello');
-  TextEditingController rightInputController =
-      TextEditingController(text: 'FlutterBoot!');
-  FocusNode leftInputFocusNode = FocusNode();
-  FocusNode rightInputFocusNode = FocusNode();
+  late final leftInputController = TextEditingController(text: 'Hello');
+  late final rightInputController = TextEditingController(text: 'FlutterBoot!');
+  final leftInputFocusNode = FocusNode();
+  final rightInputFocusNode = FocusNode();
 
   @override
   void initState() {
