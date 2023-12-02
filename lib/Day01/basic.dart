@@ -56,7 +56,7 @@ class FlutterBootPlus extends StatelessWidget {
     ),
   ];
 
-  Widget buildFeatureColumn(List<Feature> features) {
+  Widget _buildFeatureColumn(List<Feature> features) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: features
@@ -105,21 +105,15 @@ class FlutterBootPlus extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 50.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'FlutterBoot Plus',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 40.0,
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-                buildFeatureColumn(features),
-              ],
+            const Text(
+              'FlutterBoot Plus',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 40.0,
+              ),
             ),
+            const SizedBox(height: 40.0),
+            _buildFeatureColumn(features),
             const Spacer(),
             Center(
               child: Column(
@@ -127,18 +121,18 @@ class FlutterBootPlus extends StatelessWidget {
                   const Text(
                     'Restore subscription',
                     style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 14.0,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  const SizedBox(height: 20.0),
                   const Text(
                     'Auto-renews for \$25/month until canceled',
                     style: TextStyle(
-                      fontSize: 12.0,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
-                  const SizedBox(height: 20.0),
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
