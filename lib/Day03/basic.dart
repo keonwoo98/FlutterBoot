@@ -9,8 +9,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyLayout(),
+    return MaterialApp(
+      title: 'FlutterBoot Day03',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: const MyLayout(),
     );
   }
 }
@@ -94,38 +100,47 @@ class MyGridView extends StatelessWidget {
 class MyLayout extends StatelessWidget {
   const MyLayout({super.key});
 
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.red,
+      title: const Text(
+        'I can layout this',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    return Column(
+      children: [
+        const AspectRatio(
+            aspectRatio: 1,
+            child: Expanded(
+              child: MyGridView(),
+            )),
+        Expanded(
+          child: Column(
+            children: [
+              Flexible(
+                flex: 2,
+                child: Container(color: Colors.yellow),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(color: Colors.brown),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: const Text(
-            'I can layout this',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: Column(
-          children: [
-            const AspectRatio(
-                aspectRatio: 1,
-                child: Expanded(
-                  child: MyGridView(),
-                )),
-            Expanded(
-              child: Column(
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Container(color: Colors.yellow),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: Container(color: Colors.brown),
-                  )
-                ],
-              ),
-            )
-          ],
-        ));
+      appBar: _buildAppBar(),
+      body: _buildBody(),
+    );
   }
 }
