@@ -10,41 +10,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'FlutterBoot Day05',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      debugShowCheckedModeBanner: false,
       home: MyListView(),
     );
   }
 }
 
 class MyListView extends StatelessWidget {
-  final List<String> spaceDataKeys = [
-    'NGC 162',
-    '87 Sylvia',
-    'R 136a1',
-    '28978 Ixion',
-    'NGC 6715',
-    '94400 Hongdaeyong',
-    '6354 Vangelis',
-    'C/2020 F3',
-    'Cartwheel Galaxy',
-    'Sculptor Dwarf Elliptical Galaxy',
-    'Eight-Burst Nebula',
-    'Rhea',
-    'C/1702 H1',
-    'Messier 5',
-    'Messier 50',
-    'Cassiopeia A',
-    'Great Comet of 1680',
-    'Butterfly Cluster',
-    'Triangulum Galaxy',
-    'Comet of 1729',
-    'Omega Nebula',
-    'Eagle Nebula',
-    'Small Sagittarius Star Cloud',
-    'Dumbbell Nebula',
-    '54509 YORP',
-    'Dia',
-    '63145 Choemuseon',
-  ];
+  MyListView({super.key});
 
   final Map<String, int> spaceData = {
     'NGC 162': 1862,
@@ -76,34 +53,31 @@ class MyListView extends StatelessWidget {
     '63145 Choemuseon': 2000,
   };
 
-  MyListView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My first ListView!'),
       ),
-      body: MyListViewWidget(spaceDataKeys, spaceData),
+      body: MyListViewWidget(spaceData),
     );
   }
 }
 
 class MyListViewWidget extends StatelessWidget {
-  final List<String> spaceDataKeys;
   final Map<String, int> spaceData;
-  final ScrollController _scrollController = ScrollController();
+  final scrollController = ScrollController();
 
-  MyListViewWidget(this.spaceDataKeys, this.spaceData, {super.key});
+  MyListViewWidget(this.spaceData, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        controller: _scrollController,
-        itemCount: spaceDataKeys.length,
+        controller: scrollController,
+        itemCount: spaceData.length,
         itemBuilder: (context, index) {
-          final key = spaceDataKeys[index];
+          final key = spaceData.keys.elementAt(index);
           final value = spaceData[key];
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -117,15 +91,10 @@ class MyListViewWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4.0),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.network_check_sharp),
-                      const SizedBox(width: 8.0),
-                      Text('$key was discovered in $value'),
-                    ],
-                  ),
+                  const Icon(Icons.satellite_alt),
+                  const SizedBox(width: 8.0),
+                  Text('$key was discovered in $value'),
                 ],
               ),
             ),
@@ -134,13 +103,13 @@ class MyListViewWidget extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _scrollController.animateTo(
+          scrollController.animateTo(
             0.0,
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
           );
         },
-        child: const Icon(Icons.arrow_upward),
+        child: const Icon(Icons.navigation),
       ),
     );
   }
