@@ -73,30 +73,29 @@ class MyListViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
+      body: ListView.separated(
+        padding: const EdgeInsets.all(12),
         controller: scrollController,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemCount: spaceData.length,
         itemBuilder: (context, index) {
           final key = spaceData.keys.elementAt(index);
           final value = spaceData[key];
-          return Padding(
+          return Container(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                  width: 0.6,
-                ),
-                borderRadius: BorderRadius.circular(4.0),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+                width: 0.6,
               ),
-              child: Row(
-                children: [
-                  const Icon(Icons.satellite_alt),
-                  const SizedBox(width: 8.0),
-                  Text('$key was discovered in $value'),
-                ],
-              ),
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.satellite_alt),
+                const SizedBox(width: 8.0),
+                Text('$key was discovered in $value'),
+              ],
             ),
           );
         },
