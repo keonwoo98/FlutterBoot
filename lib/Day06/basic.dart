@@ -33,13 +33,9 @@ class HelloDialog extends StatefulWidget {
 class _HelloDialogState extends State<HelloDialog> {
   int point = 0;
 
-  int generateRandomNumber() {
-    return Random().nextInt(100);
-  }
-
-  List<int> generateUniqueNumbers() {
+  List<int> generateRandomNumber(int count) {
     List<int> numbers = [];
-    while (numbers.length < 3) {
+    while (numbers.length < count) {
       int randomNum = Random().nextInt(100);
       if (!numbers.contains(randomNum)) {
         numbers.add(randomNum);
@@ -49,49 +45,57 @@ class _HelloDialogState extends State<HelloDialog> {
   }
 
   Future<void> _showNumberPickerDialog() async {
-    List<int> uniqueNumbers = generateUniqueNumbers();
+    List<int> randomNumbers = generateRandomNumber(3);
 
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Choose your next point!',
-            style: TextStyle(fontWeight: FontWeight.w500),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Choose one of the points below!'),
-              const Text(
-                  'If you don\'t make a selection, your current score will be retained.'),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: List.generate(
-                  3,
-                  (index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(uniqueNumbers[index]);
-                        setState(() {
-                          point = uniqueNumbers[index];
-                        });
-                      },
-                      child: Text(
-                        '${uniqueNumbers[index]}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+        return _buildNumberPickerDialog(randomNumbers);
       },
+    );
+  }
+
+  Widget _buildNumberButton(int number) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          setState(() {
+            point = number;
+          });
+        },
+        child: Text(
+          '$number',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNumberPickerDialog(List<int> randomNumbers) {
+    return AlertDialog(
+      title: const Text(
+        'Choose your next point!',
+        style: TextStyle(fontWeight: FontWeight.w500),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Choose one of the points below!'),
+          const Text(
+              'If you don\'t make a selection, your current score will be retained.'),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: List.generate(
+              3,
+              (index) => _buildNumberButton(randomNumbers[index]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -124,7 +128,7 @@ class _HelloDialogState extends State<HelloDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 36),
+            const SizedBox(height: 56),
           ],
         ),
       ),
