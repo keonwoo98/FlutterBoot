@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,7 +34,7 @@ class _HelloHttpState extends State<HelloHttp> {
 
   bool isLoading = false;
   FocusNode focusNode = FocusNode();
-  List<dynamic> searchResults = [];
+  List<Human> searchResults = [];
   String errorMessage = "";
 
   @override
@@ -55,22 +54,28 @@ class _HelloHttpState extends State<HelloHttp> {
           'https://swapi.dev/api/people/?search=${_searchTextController.text}'));
 
       if (response.statusCode == 200) {
-        setState(() {
-          searchResults = jsonDecode(response.body)['results'];
-          isLoading = false;
-        });
-
-        if (searchResults.isEmpty) {
-          setState(() {
-            errorMessage =
-                'No result found. Please try again with a different search term.';
-          });
-        }
+        handleSuccessResponse(response);
       } else {
         handleApiError(response.statusCode);
       }
     } catch (error) {
       handleApiError(null);
+    }
+  }
+
+  void handleSuccessResponse(http.Response response) {
+    final people = People.fromJson(jsonDecode(response.body));
+
+    setState(() {
+      searchResults = people.results ?? [];
+      isLoading = false;
+    });
+
+    if (searchResults.isEmpty) {
+      setState(() {
+        errorMessage =
+            'No result found. Please try again with a different search term.';
+      });
     }
   }
 
@@ -118,7 +123,7 @@ class _HelloHttpState extends State<HelloHttp> {
 class SearchTextField extends StatelessWidget {
   final TextEditingController searchTextController;
   final FocusNode focusNode;
-  final Function() onSearchPressed;
+  final VoidCallback onSearchPressed;
 
   const SearchTextField({
     super.key,
@@ -156,7 +161,7 @@ class SearchTextField extends StatelessWidget {
 class SearchResults extends StatelessWidget {
   final bool isLoading;
   final String errorMessage;
-  final List<dynamic> searchResults;
+  final List<Human> searchResults;
 
   const SearchResults({
     super.key,
@@ -194,23 +199,23 @@ class SearchResults extends StatelessWidget {
                 children: [
                   const SizedBox(height: 4.0),
                   Text(
-                    result['name'],
+                    result.name ?? '',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('${result['height']} / '),
-                      Text('${result['mass']}')
+                      Text('${result.height} / '),
+                      Text('${result.mass}')
                     ],
                   ),
                   const SizedBox(height: 4.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Hair Color: ${result['hair_color']} | '),
-                      Text('Skin Color: ${result['skin_color']}')
+                      Text('Hair Color: ${result.hairColor} | '),
+                      Text('Skin Color: ${result.skinColor}')
                     ],
                   ),
                   const SizedBox(height: 4.0),
@@ -222,5 +227,83 @@ class SearchResults extends StatelessWidget {
       );
     }
     return Container();
+  }
+}
+
+class People {
+  int? count;
+  String? next;
+  int? previous;
+  List<Human>? results;
+
+  People({this.count, this.next, this.previous, this.results});
+
+  People.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
+    if (json['results'] != null) {
+      results = <Human>[];
+      json['results'].forEach((v) {
+        results!.add(Human.fromJson(v));
+      });
+    }
+  }
+}
+
+class Human {
+  String? name;
+  String? height;
+  String? mass;
+  String? hairColor;
+  String? skinColor;
+  String? eyeColor;
+  String? birthYear;
+  String? gender;
+  String? homeworld;
+  List<String>? films;
+  List<String>? species;
+  List<String>? vehicles;
+  List<String>? starships;
+  String? created;
+  String? edited;
+  String? url;
+
+  Human({
+    this.name,
+    this.height,
+    this.mass,
+    this.hairColor,
+    this.skinColor,
+    this.eyeColor,
+    this.birthYear,
+    this.gender,
+    this.homeworld,
+    this.films,
+    this.species,
+    this.vehicles,
+    this.starships,
+    this.created,
+    this.edited,
+    this.url,
+  });
+
+  Human.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    height = json['height'];
+    mass = json['mass'];
+    hairColor = json['hair_color'];
+    skinColor = json['skin_color'];
+    eyeColor = json['eye_color'];
+    birthYear = json['birth_year'];
+    gender = json['gender'];
+    homeworld = json['homeworld'];
+    films = json['films'].cast<String>();
+    species = json['species'].cast<String>();
+    vehicles = json['vehicles'].cast<String>();
+    starships = json['starships'].cast<String>();
+    created = json['created'];
+    edited = json['edited'];
+    url = json['url'];
   }
 }
