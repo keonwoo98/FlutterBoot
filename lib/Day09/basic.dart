@@ -147,6 +147,7 @@ class _MyRandomImageSliderState extends State<MyRandomImageSlider> {
                 : isError
                     ? const Center(child: Text('Oops! Something went wrong.'))
                     : Image.network(
+                        width: double.infinity,
                         currentImageSrc,
                         fit: BoxFit.fill,
                       ),
