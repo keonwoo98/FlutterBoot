@@ -79,34 +79,27 @@ class _HelloDialogState extends State<HelloDialog> {
         'Choose your next point!',
         style: TextStyle(fontWeight: FontWeight.w500),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Choose one of the points below!'),
-          const Text(
-              'If you don\'t make a selection, your current score will be retained.'),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: List.generate(
+      content: const Text(
+          'Choose one of the points below!\nIf you don\'t make a selection, your current score will be retained.'),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: List.generate(
               3,
-              (index) => _buildNumberButton(randomNumbers[index]),
-            ),
-          ),
-        ],
-      ),
+              (index) => _buildNumberButton(
+                    randomNumbers[index],
+                  )),
+        )
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               'Your point : $point',
@@ -128,7 +121,6 @@ class _HelloDialogState extends State<HelloDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 56),
           ],
         ),
       ),
