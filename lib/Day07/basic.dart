@@ -76,21 +76,17 @@ class _HelloOverlay extends State<HelloOverlay> {
   }
 
   Widget overlayButton(String buttonName, GlobalKey buttonKey) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      width: double.infinity,
-      child: ElevatedButton(
-        key: buttonKey,
-        onPressed: () {
-          RenderBox renderBox =
-              buttonKey.currentContext!.findRenderObject() as RenderBox;
-          Offset offset = renderBox.localToGlobal(Offset.zero);
-          showOverlay(offset, renderBox.size.width);
-        },
-        child: Text(
-          buttonName,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+    return ElevatedButton(
+      key: buttonKey,
+      onPressed: () {
+        RenderBox renderBox =
+            buttonKey.currentContext!.findRenderObject() as RenderBox;
+        Offset offset = renderBox.localToGlobal(Offset.zero);
+        showOverlay(offset, renderBox.size.width);
+      },
+      child: Text(
+        buttonName,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -124,18 +120,14 @@ class _HelloOverlay extends State<HelloOverlay> {
         appBar: AppBar(
           title: const Text('Hello Overlay'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 16.0,
-            ),
-            ...List.generate(
-              _buttons.length,
-              (index) => overlayButton(_buttons[index], _buttonKeys[index]),
-            ),
-          ],
+        body: ListView.separated(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(32),
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (_, index) =>
+              overlayButton(_buttons[index], _buttonKeys[index]),
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemCount: _buttons.length,
         ),
       ),
     );
