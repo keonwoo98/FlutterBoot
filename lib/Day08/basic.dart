@@ -30,18 +30,11 @@ class HelloHttp extends StatefulWidget {
 }
 
 class _HelloHttpState extends State<HelloHttp> {
-  late TextEditingController _searchTextController;
-
+  final _searchTextController = TextEditingController(text: 'sky');
   bool isLoading = false;
   FocusNode focusNode = FocusNode();
-  List<Human> searchResults = [];
+  List<StarWarsPeople> searchResults = [];
   String errorMessage = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _searchTextController = TextEditingController(text: "sky");
-  }
 
   Future<void> fetchData() async {
     setState(() {
@@ -64,10 +57,12 @@ class _HelloHttpState extends State<HelloHttp> {
   }
 
   void handleSuccessResponse(http.Response response) {
-    final people = People.fromJson(jsonDecode(response.body));
+    final people = ((jsonDecode(response.body)['results']) as Iterable)
+        .map((e) => StarWarsPeople.fromJson(e))
+        .toList();
 
     setState(() {
-      searchResults = people.results ?? [];
+      searchResults = people;
       isLoading = false;
     });
 
@@ -161,7 +156,7 @@ class SearchTextField extends StatelessWidget {
 class SearchResults extends StatelessWidget {
   final bool isLoading;
   final String errorMessage;
-  final List<Human> searchResults;
+  final List<StarWarsPeople> searchResults;
 
   const SearchResults({
     super.key,
@@ -199,7 +194,7 @@ class SearchResults extends StatelessWidget {
                 children: [
                   const SizedBox(height: 4.0),
                   Text(
-                    result.name ?? '',
+                    result.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4.0),
@@ -207,7 +202,7 @@ class SearchResults extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${result.height} / '),
-                      Text('${result.mass}')
+                      Text(result.mass),
                     ],
                   ),
                   const SizedBox(height: 4.0),
@@ -230,80 +225,34 @@ class SearchResults extends StatelessWidget {
   }
 }
 
-class People {
-  int? count;
-  String? next;
-  int? previous;
-  List<Human>? results;
+class StarWarsPeople {
+  final String name;
+  final String height;
+  final String mass;
+  final String hairColor;
+  final String skinColor;
+  final String birthYear;
+  final String gender;
 
-  People({this.count, this.next, this.previous, this.results});
-
-  People.fromJson(Map<String, dynamic> json) {
-    count = json['count'];
-    next = json['next'];
-    previous = json['previous'];
-    if (json['results'] != null) {
-      results = <Human>[];
-      json['results'].forEach((v) {
-        results!.add(Human.fromJson(v));
-      });
-    }
-  }
-}
-
-class Human {
-  String? name;
-  String? height;
-  String? mass;
-  String? hairColor;
-  String? skinColor;
-  String? eyeColor;
-  String? birthYear;
-  String? gender;
-  String? homeworld;
-  List<String>? films;
-  List<String>? species;
-  List<String>? vehicles;
-  List<String>? starships;
-  String? created;
-  String? edited;
-  String? url;
-
-  Human({
-    this.name,
-    this.height,
-    this.mass,
-    this.hairColor,
-    this.skinColor,
-    this.eyeColor,
-    this.birthYear,
-    this.gender,
-    this.homeworld,
-    this.films,
-    this.species,
-    this.vehicles,
-    this.starships,
-    this.created,
-    this.edited,
-    this.url,
+  StarWarsPeople._({
+    required this.name,
+    required this.height,
+    required this.mass,
+    required this.hairColor,
+    required this.skinColor,
+    required this.birthYear,
+    required this.gender,
   });
 
-  Human.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    height = json['height'];
-    mass = json['mass'];
-    hairColor = json['hair_color'];
-    skinColor = json['skin_color'];
-    eyeColor = json['eye_color'];
-    birthYear = json['birth_year'];
-    gender = json['gender'];
-    homeworld = json['homeworld'];
-    films = json['films'].cast<String>();
-    species = json['species'].cast<String>();
-    vehicles = json['vehicles'].cast<String>();
-    starships = json['starships'].cast<String>();
-    created = json['created'];
-    edited = json['edited'];
-    url = json['url'];
+  factory StarWarsPeople.fromJson(Map<String, dynamic> json) {
+    return StarWarsPeople._(
+      name: json['name'],
+      height: json['height'],
+      mass: json['mass'],
+      hairColor: json['hair_color'],
+      skinColor: json['skin_color'],
+      birthYear: json['birth_year'],
+      gender: json['gender'],
+    );
   }
 }
